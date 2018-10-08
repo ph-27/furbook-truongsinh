@@ -6,6 +6,6 @@
 
 @section('content')
     {!! Form::open(['url' => 'cats']) !!}
-    @include('partials.forms.cat')
+    @include('layouts.partials.form.cat')
     {!! Form::close() !!}
 @endsection

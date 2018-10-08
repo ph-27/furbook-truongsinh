@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,6 +9,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use Furbook\Http\Requests\CatRequest;
+View::composer('partials.forms.cat', function ($view) {
+    $view->breeds = Furbook\Breed::pluck('name', 'id');
+});
 Route::get('/', function () {
     /**
      * Test get query log
@@ -23,47 +26,11 @@ Route::get('/', function () {
      * Test data relation
      */
     //dd($breed->cats);
-    //dd($cat->breed); 
+    //dd($cat->breed);
     return redirect('cats');
 });
-//show list cats
-Route::get('/cats', function () {
-    $cats = Furbook\Cat::all();
-    return view('cats.index')->with('cats',$cats);
-})->name('cat.index');
-
-//show list cats belong to breed
-Route::get('/cats/breeds/{name}', function ($name) {
-    return 'Show list cats belong to breed'. $name;
-})->name('cat.breed');
-
-//show detail of cat
-Route::get('/cats/{id}', function ($id) {
-    return 'Show detail of cat #' .$id;
-})->name('cat.show')->where('id', '[0-9]+');
-
-//show form create cat
-Route::get('/cats/create', function () {
-    return 'Show form create cat';
-})->name('cat.create');
-
-//Insert new cat
-Route::post('/cats', function () {
-    return 'Insert new cat';
-})->name('cat.store');
-
-//Show form edit cat
-Route::get('/cats/{id}/edit', function ($id) {
-    return 'Show form edit cat #'.$id;
-})->name('cat.edit');
-
-//Update cat
-Route::put('/cats/{id}/update', function ($id) {
-    return 'Show form edit cat #'.$id;
-})->name('cat.update');
-
-//Delete cat
-Route::delete('/cats/{id}', function ($id) {
-    return 'Delete cat #'.$id;
-})->name('cat.destroy');
-
+Route::resource('cats', 'CatController');
+// Show list cats belong to breed
+Route::get('/cats/breeds/{name}', ['uses' => 'CatController@breed', 'as' => 'cats.breed']);
+// Test
+Route::get('test', 'TestController@_is_last_weekday_of_month');
