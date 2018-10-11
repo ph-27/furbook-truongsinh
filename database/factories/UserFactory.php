@@ -1,7 +1,5 @@
 <?php
-
 use Faker\Generator as Faker;
-
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -12,7 +10,6 @@ use Faker\Generator as Faker;
 | model instances for testing / seeding your application's database.
 |
 */
-
 $factory->define(Furbook\User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
@@ -21,13 +18,13 @@ $factory->define(Furbook\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
-
 $factory->define(Furbook\Cat::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'date_of_birth' => $faker->date(),
         'breed_id' => 1,
-        'created_at' => $faker->unixTime,
-        'updated_at' => $faker->unixTime,
+        'user_id' => 1,
+        'created_at' => $faker->unixTime(),
+        'updated_at' => $faker->unixTime()
     ];
 });

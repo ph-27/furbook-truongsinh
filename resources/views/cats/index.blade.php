@@ -25,7 +25,7 @@
                 <td>{{$cat->id}}</td>
                 <td><a href="{{route('cats.show', $cat->id)}}">{{$cat->name}}</a></td>
                 <td>{{$cat->date_of_birth}}</td>
-                <td><a href="/cats/breeds/{{$cat->breed->name}}">{{$cat->breed->name}}</a></td>
+                <td>{{link_to('cats/breeds/' . $cat->breed->name, $cat->breed->name)}}</td>
                 <td><a class="btn btn-warning" href="{{route('cats.edit', $cat->id)}}">Edit</a></td>
                 <td>
                     <form action="{{route('cats.destroy', $cat->id)}}" method="POST" onsubmit="return confirm('Are you sure?');">

@@ -3,10 +3,19 @@ namespace Furbook\Http\Controllers;
 use Illuminate\Http\Request;
 use Furbook\Http\Requests\CatRequest;
 use Furbook\Cat;
-use Furbook\Breed;
 use Validator;
+use Auth;
 class CatController extends Controller
 {
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('admin')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,9 +34,7 @@ class CatController extends Controller
      */
     public function create()
     {
-        $breeds = Breed::pluck('name', 'id');
-
-        return view('cats.create')->with('breeds', $breeds);
+        return view('cats.create');
     }
     /**
      * Store a newly created resource in storage.
@@ -78,27 +85,34 @@ class CatController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \Furbook\Cat  $cat
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Cat $cat)
     {
-        $breeds = Breed::pluck('name', 'id');
-        $cat = Cat::find($id);
+        if(!Auth::check() || !Auth::user()->canEdit($cat)){
+            return redirect()
+                ->route('cats.index')
+                ->withError('Access denied');
+        }
         //dd($cat);
-        return view('cats.edit', compact('cat','breeds'));
+        return view('cats.edit', compact('cat'));
     }
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Furbook\Http\Requests\CatRequest  $request
+     * @param  \Furbook\Cat  $cat
      * @return \Illuminate\Http\Response
      */
-    public function update(CatRequest $request, $id)
+    public function update(CatRequest $request, Cat $cat)
     {
+        if(!Auth::check() || !Auth::user()->canEdit($cat)){
+            return redirect()
+                ->route('cats.index')
+                ->withError('Access denied');
+        }
         $data = $request->all();
-        $cat = Cat::find($id);
         $cat->update($data);
         return redirect()
             ->route('cats.index');
@@ -125,7 +139,7 @@ class CatController extends Controller
      */
     public function breed($name)
     {
-        $breed = Breed::where('name', $name)
+        $breed = \Furbook\Breed::where('name', $name)
             ->first();
         $cats = $breed->cats;
         //dd($cats);

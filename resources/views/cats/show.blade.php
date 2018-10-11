@@ -24,5 +24,5 @@
         @if($cat->breed)
             {{link_to('cats/breeds/' . $cat->breed->name, $cat->breed->name)}}
         @endif
-    </p>
+    </p> 
 @endsection 
